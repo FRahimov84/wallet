@@ -123,7 +123,7 @@ func (s *Service) Pay(accountID int64, amount types.Money, category types.Paymen
 	paymentID :=uuid.New().String()
 	payment := &types.Payment{
 		ID: paymentID,
-		AccountId: accountID,
+		AccountID: accountID,
 		Amount: amount,
 		Category: category,
 		Status: types.PaymentStatusInProgress,
@@ -163,7 +163,7 @@ func (s *Service) Reject(paymentID string) error  {
 
 	var targetAccount *types.Account
 	for _, account := range s.accounts {
-		if account.ID == targetPayment.AccountId {
+		if account.ID == targetPayment.AccountID {
 			targetAccount = account
 			break
 		}

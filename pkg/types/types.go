@@ -20,7 +20,7 @@ const (
 //Payment представляет информацию о платеже
 type Payment struct{
 	ID string
-	AccountId int64
+	AccountID int64
 	Amount Money
 	Category PaymentCategory
 	Status PaymentStatus
