@@ -4,16 +4,6 @@ import (
 	"github.com/Shahlojon/wallet/pkg/types"
 	"testing"
 )
-func TestService_FindAccoundById_Method_NotFound(t *testing.T) {
-	svc := Service{}
-	svc.RegisterAccount("+9920000001")
-
-	account, err := svc.FindAccountByID(2)
-	if err == nil {
-		t.Errorf("\ngot > %v \nwant > nil", account)
-	}
-}
-
 func TestService_RegisterAccount_unsuccess(t *testing.T)  {
 	vc := Service{}
 
@@ -31,6 +21,17 @@ func TestService_RegisterAccount_unsuccess(t *testing.T)  {
 			t.Errorf("invalid result, expected: %v, actual: %v", err, result)
 			break
 		}
+	}
+}
+
+
+func TestService_FindAccoundById_Method_NotFound(t *testing.T) {
+	svc := Service{}
+	svc.RegisterAccount("+9920000001")
+
+	account, err := svc.FindAccountByID(3)
+	if err == nil {
+		t.Errorf("\ngot > %v \nwant > nil", account)
 	}
 }
 
