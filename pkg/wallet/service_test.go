@@ -198,11 +198,11 @@ func TestService_FavoritePayment_success_user(t *testing.T) {
 	//edit favorite
 	favorite, err := s.FavoritePayment(payment.ID, "auto")
 	if err != nil {
-		t.Errorf("method FavoritePayment return not nil error, favorite=>%v", favorite)
+		t.Errorf("method FavoritePayment returned not nil error, favorite=>%v", favorite)
 	}
 
 	paymentFavorite, err := s.PayFromFavorite(favorite.ID)
 	if err != nil {
-		t.Errorf("method PayFromFavorite return nil, paymentFavorite(%v)", paymentFavorite)
+		t.Errorf("method PayFromFavorite returned nil, paymentFavorite(%v)", paymentFavorite)
 	}
 }
