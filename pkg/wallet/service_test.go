@@ -235,12 +235,11 @@ func TestService_Reject_success(t *testing.T) {
 	}
 }
 
-
 func TestService_Repeat_success_user(t *testing.T) {
 	//создаем сервис
 	s := newTestServiceUser()
 	s.RegisterAccount("+9922000000")
-	account, err :=s.FindAccountByID(1)
+	account, err := s.FindAccountByID(1)
 	if err != nil {
 		t.Error(err)
 		return
@@ -263,6 +262,37 @@ func TestService_Repeat_success_user(t *testing.T) {
 
 	pay, err = s.Repeat(pay.ID)
 	if err != nil {
-		t.Errorf("Repeat(): can't payment for an account(%v), error(%v)",pay.ID, err)
+		t.Errorf("Repeat(): can't payment for an account(%v), error(%v)", pay.ID, err)
+	}
+}
+
+func TestService_FavoritePayment_success_user(t *testing.T) {
+	//создаем сервис
+	var s Service
+
+	account, err := s.RegisterAccount("+9922000000")
+	if err != nil {
+		t.Errorf("method RegisterAccount return not nil error, account=>%v", account)
+		return
+	}
+	//пополняем баланс
+	err = s.Deposit(account.ID, 1000_00)
+	if err != nil {
+		t.Errorf("method Deposit return not nil error, error=>%v", err)
+	}
+	//pay
+	payment, err := s.Pay(account.ID, 100_00, "auto")
+	if err != nil {
+		t.Errorf("method Pay return not nil error, account=>%v", account)
+	}
+	//edit favorite
+	favorite, err := s.FavoritePayment(payment.ID, "auto")
+	if err != nil {
+		t.Errorf("method FavoritePayment return not nil error, favorite=>%v", favorite)
+	}
+
+	paymentFavorite, err := s.PayFromFavorite(favorite.ID)
+	if err != nil {
+		t.Errorf("method PayFromFavorite return nil, paymentFavorite(%v)", paymentFavorite)
 	}
 }

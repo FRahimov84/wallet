@@ -9,6 +9,7 @@ import (
 )
 
 var ErrPhoneRegistered = errors.New("phone already registered")
+var ErrFavoriteNotFound = errors.New("favorite not found")
 var ErrAmountMustBePositive = errors.New("amount must be greater than 0")
 var ErrAccountNotFound = errors.New("account not found")
 var ErrNotEnoughBalance = errors.New("balance is null")
@@ -18,6 +19,7 @@ type Service struct {
 	nextAccountID int64 //Для генерации уникального номера аккаунта
 	accounts      []*types.Account
 	payments      []*types.Payment
+	favorites     []*types.Favorite
 }
 
 type Error string
@@ -232,17 +234,58 @@ func (s *testServiceUser) addAccountUser(data testAccountUser) (*types.Account, 
 //Repeat-позволяет по идентификатору повторить платёж - т.е.
 //создать новый, у которого все данные, кроме идентификатора - те же самые, что в
 //оригинальном платеже.
-func (s *Service) Repeat(paymentID string) (*types.Payment, error){
+func (s *Service) Repeat(paymentID string) (*types.Payment, error) {
 	pay, err := s.FindPaymentByID(paymentID)
-	if err!=nil {
+	if err != nil {
 		return nil, err
 	}
 
-	payment, err :=s.Pay(pay.AccountID, pay.Amount, pay.Category)
-	if err!=nil {
+	payment, err := s.Pay(pay.AccountID, pay.Amount, pay.Category)
+	if err != nil {
 		return nil, err
 	}
 
 	return payment, err
 }
 
+func (s *Service) FavoritePayment(paymentID string, name string) (*types.Favorite, error) {
+	pay, err := s.FindPaymentByID(paymentID)
+	if err != nil {
+		return nil, err
+	}
+
+	favoriteID := uuid.New().String()
+	favorite := &types.Favorite{
+		ID:        favoriteID,
+		AccountID: pay.AccountID,
+		Amount:    pay.Amount,
+		Category:  pay.Category,
+		Name:      name,
+	}
+
+	s.favorites = append(s.favorites, favorite)
+	return favorite, err
+
+}
+
+//PayFromFavorite
+func (s *Service) PayFromFavorite(favoriteID string) (*types.Payment, error) {
+	var favorite *types.Favorite
+	for _, favorites := range s.favorites {
+		if favorites.ID == favoriteID {
+			favorite = favorites
+			break
+		}
+	}
+
+	if favorite == nil {
+		return nil, ErrFavoriteNotFound
+	}
+
+	pay, err := s.Pay(favorite.AccountID, favorite.Amount, favorite.Category)
+	if err != nil {
+		return nil, err
+	}
+
+	return pay, nil
+}
