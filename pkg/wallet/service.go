@@ -158,13 +158,13 @@ func (s *Service) FindPaymentByID(paymentID string) (*types.Payment, error) {
 	return nil, ErrPaymentNotFound
 }
 
-type testService struct {
+type testServiceUser struct {
 	*Service
 }
 
 //Функция конструктор
-func newTestService() *testService {
-	return &testService{Service: &Service{}}
+func newTestServiceUser() *testServiceUser {
+	return &testServiceUser{Service: &Service{}}
 }
 
 //addAccountWithBalnce
@@ -183,7 +183,7 @@ func newTestService() *testService {
 // 	return account, nil
 // }
 
-type testAccount struct {
+type testAccountUser struct {
 	phone    types.Phone
 	balance  types.Money
 	payments []struct {
@@ -192,7 +192,7 @@ type testAccount struct {
 	}
 }
 
-var defaultTestAccount = testAccount{
+var defaultTestAccountUser = testAccountUser{
 	phone:   "+99200000001",
 	balance: 10_000_00,
 	payments: []struct {
@@ -203,7 +203,7 @@ var defaultTestAccount = testAccount{
 	},
 }
 
-func (s *testService) addAccount(data testAccount) (*types.Account, []*types.Payment, error) {
+func (s *testServiceUser) addAccountUser(data testAccountUser) (*types.Account, []*types.Payment, error) {
 	//регистрируем там пользователя
 	account, err := s.RegisterAccount(data.phone)
 	if err != nil {
