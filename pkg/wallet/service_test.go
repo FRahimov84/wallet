@@ -234,3 +234,35 @@ func TestService_Reject_success(t *testing.T) {
 		return
 	}
 }
+
+
+func TestService_Repeat_success_user(t *testing.T) {
+	//создаем сервис
+	s := newTestService()
+	s.RegisterAccount("+9922000000")
+	account, err :=s.FindAccountByID(1)
+	if err != nil {
+		t.Error(err)
+		return
+	}
+	//пополняем баланс
+	err = s.Deposit(account.ID, 1000_00)
+	if err != nil {
+		t.Errorf("\ngot > %v \nwant > nil", err)
+	}
+	//pay
+	payment, err := s.Pay(account.ID, 100_00, "auto")
+	if err != nil {
+		t.Errorf("\ngot > %v \nwant > nil", err)
+	}
+
+	pay, err := s.FindPaymentByID(payment.ID)
+	if err != nil {
+		t.Errorf("\ngot > %v \nwant > nil", err)
+	}
+
+	pay, err = s.Repeat(pay.ID)
+	if err != nil {
+		t.Errorf("Repeat(): can't payment for an account(%v), error(%v)",pay.ID, err)
+	}
+}
