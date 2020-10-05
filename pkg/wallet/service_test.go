@@ -130,8 +130,8 @@ func TestService_FindAccoundById_Method_NotFound(t *testing.T) {
 
 func TestService_FindPaymentByID_success(t *testing.T) {
 	//создаем сервис
-	s := newTestService()
-	_, payments, err := s.addAccount(defaultTestAccount)
+	s := newTestServiceUser()
+	_, payments, err := s.addAccountUser(defaultTestAccountUser)
 	if err != nil {
 		t.Error(err)
 		return
@@ -151,8 +151,8 @@ func TestService_FindPaymentByID_success(t *testing.T) {
 
 func TestService_FindPaymentByID_fail(t *testing.T) {
 	//создаем сервис
-	s := newTestService()
-	_, _, err := s.addAccount(defaultTestAccount)
+	s := newTestServiceUser()
+	_, _, err := s.addAccountUser(defaultTestAccountUser)
 	if err != nil {
 		t.Error(err)
 		return
@@ -204,8 +204,8 @@ func TestService_Reject_fail(t *testing.T) {
 
 func TestService_Reject_success(t *testing.T) {
 	//создаем сервис
-	s := newTestService()
-	_, payments, err := s.addAccount(defaultTestAccount)
+	s := newTestServiceUser()
+	_, payments, err := s.addAccountUser(defaultTestAccountUser)
 	if err != nil {
 		t.Error(err)
 		return
@@ -229,7 +229,7 @@ func TestService_Reject_success(t *testing.T) {
 		t.Errorf("Reject(): can't find account by id, error = %v", err)
 		return
 	}
-	if savedAccount.Balance != defaultTestAccount.balance {
+	if savedAccount.Balance != defaultTestAccountUser.balance {
 		t.Errorf("Reject(): balance didn't changed, account = %v", savedAccount)
 		return
 	}
@@ -238,7 +238,7 @@ func TestService_Reject_success(t *testing.T) {
 
 func TestService_Repeat_success_user(t *testing.T) {
 	//создаем сервис
-	s := newTestService()
+	s := newTestServiceUser()
 	s.RegisterAccount("+9922000000")
 	account, err :=s.FindAccountByID(1)
 	if err != nil {
