@@ -3,7 +3,6 @@ package wallet
 import (
 	"errors"
 	"fmt"
-
 	"github.com/Shahlojon/wallet/pkg/types"
 	"github.com/google/uuid"
 )
@@ -115,30 +114,12 @@ func (s *Service) FindAccountByID(accountID int64) (*types.Account, error) {
 	return account, nil
 }
 
-// func (s *Service) Reject(paymentID string) error  {
-// var targetPayment *types.Payment
-// for _, payment := range s.payments {
-// 	if payment.ID == paymentID {
-// 		targetPayment = payment
-// 		break
-// 	}
-// }
-// if targetPayment == nil {
-// 	return ErrPaymentNotFound
-// }
-
 func (s *Service) Reject(paymentID string) error {
 	payment, err := s.FindPaymentByID(paymentID)
 	if err != nil {
 		return err
 	}
-	// var targetAccount *types.Account
-	// for _, account := range s.accounts {
-	// 	if account.ID == targetPayment.AccountID {
-	// 		targetAccount = account
-	// 		break
-	// 	}
-	// }
+
 	account, err := s.FindAccountByID(payment.AccountID)
 
 	if err != nil {
@@ -168,22 +149,6 @@ type testServiceUser struct {
 func newTestServiceUser() *testServiceUser {
 	return &testServiceUser{Service: &Service{}}
 }
-
-//addAccountWithBalnce
-// func (s *testService) addAccountWithBalnce(phone types.Phone, balance types.Money) (*types.Account, error) {
-// 	account, err := s.RegisterAccount(phone)
-// 	if err != nil {
-// 		return nil, fmt.Errorf("can't register account, error = %v", err)
-// 	}
-
-// 	//пополняем его счёт
-// 	err = s.Deposit(account.ID, balance)
-// 	if err != nil {
-// 		return nil, fmt.Errorf("can't deposit account, error = %v", err)
-// 	}
-
-// 	return account, nil
-// }
 
 type testAccountUser struct {
 	phone    types.Phone
