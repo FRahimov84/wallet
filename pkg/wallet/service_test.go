@@ -1,13 +1,17 @@
 package wallet
+
 import (
 	"reflect"
-	"github.com/Shahlojon/wallet/pkg/types"
 	"testing"
+
+	"github.com/Shahlojon/wallet/pkg/types"
+	"github.com/google/uuid"
 )
-func TestService_RegisterAccount_unsuccess(t *testing.T)  {
+
+func TestService_RegisterAccount_unsuccess(t *testing.T) {
 	vc := Service{}
 
-	accounts := []types.Account {
+	accounts := []types.Account{
 		{ID: 1, Phone: "+992000000001", Balance: 2_000_00},
 		{ID: 2, Phone: "+992000000002", Balance: 3_000_00},
 		{ID: 3, Phone: "+992000000003", Balance: 4_000_00},
@@ -24,7 +28,6 @@ func TestService_RegisterAccount_unsuccess(t *testing.T)  {
 	}
 }
 
-
 func TestService_FindAccoundById_Method_NotFound(t *testing.T) {
 	svc := Service{}
 	svc.RegisterAccount("+9920000001")
@@ -35,65 +38,136 @@ func TestService_FindAccoundById_Method_NotFound(t *testing.T) {
 	}
 }
 
-func TestService_Reject_success(t *testing.T)  {
-	s := &Service{}
+// func TestService_Reject_success(t *testing.T)  {
+// 	s := &Service{}
 
-	phone := types.Phone("+9920000001")
-	account, err := s.RegisterAccount(phone)
+// 	phone := types.Phone("+9920000001")
+// 	account, err := s.RegisterAccount(phone)
+// 	if err != nil {
+// 		t.Errorf("Reject(): can't register account, error = %v", err)
+// 		return
+// 	}
+
+// 	err = s.Deposit(account.ID, 10_000_00)
+// 	if err != nil {
+// 		t.Errorf("Reject(): can't deposit account, error = %v", err)
+// 		return
+// 	}
+
+// 	payment, err := s.Pay(account.ID, 1000_00, "auto")
+// 	if err != nil {
+// 		t.Errorf("Reject(): can't create payment, error = %v", err)
+// 		return
+// 	}
+
+// 	err = s.Reject(payment.ID)
+// 	if err != nil {
+// 		t.Errorf("Reject(): error = %v", err)
+// 		return
+// 	}
+// }
+
+// func TestService_FindPaymentByID_success(t *testing.T)  {
+// 	s := &Service{}
+
+// 	phone := types.Phone("+9920000001")
+// 	account, err := s.RegisterAccount(phone)
+// 	if err != nil {
+// 		t.Errorf("Reject(): can't register account, error = %v", err)
+// 		return
+// 	}
+
+// 	err = s.Deposit(account.ID, 10_000_00)
+// 	if err != nil {
+// 		t.Errorf("Reject(): can't deposit account, error = %v", err)
+// 		return
+// 	}
+
+// 	payment, err := s.Pay(account.ID, 1000_00, "auto")
+// 	if err != nil {
+// 		t.Errorf("Reject(): can't create payment, error = %v", err)
+// 		return
+// 	}
+
+// 	got, err := s.FindPaymentByID(payment.ID)
+// 	if err != nil {
+// 		t.Errorf("FindPaymentByID(): error = %v", err)
+// 		return
+// 	}
+
+// 	if !reflect.DeepEqual(payment, got) {
+// 		t.Errorf("FindPaymentByID(): wrong payment returned = %v", err)
+// 	}
+// }
+
+// func TestService_FindPaymentByID_fail(t *testing.T)  {
+// 	//создаём сервис
+// 	s := newTestService();
+
+// 	account, err := s.addAccountWithBalnce("+99200000001", 10_000_00)
+// 	if err != nil {
+// 		t.Error(err)
+// 		return
+// 	}
+
+// 	//осушествляем платёж на его счёт
+// 	payment, err := s.Pay(account.ID, 1000_00, "auto")
+// 	if err != nil {
+// 		t.Errorf("FindPaymentByID: can't create	payment, error = %v", err)
+// 		return
+// 	}
+// 	//пробуем найти несушествующий платёж
+// 	got, err := s.FindPaymentByID(uuid.New().String())
+// 	if err != nil {
+// 		t.Error("FindPaymentByID: must return error, returned nil")
+// 		return
+// 	}
+
+// 	if err!=ErrPaymentNotFound {
+// 		t.Errorf("FindPaymentByID(): must return ErrPaymnetNotFound, returned = %v", err)
+// 	}
+// }
+
+func TestService_FindPaymentByID_success(t *testing.T) {
+	//создаем сервис
+	s := newTestService()
+	_, payments, err := s.addAccount(defaultTestAccount)
 	if err != nil {
-		t.Errorf("Reject(): can't register account, error = %v", err)
+		t.Error(err)
 		return
 	}
 
-	err = s.Deposit(account.ID, 10_000_00)
-	if err != nil {
-		t.Errorf("Reject(): can't deposit account, error = %v", err)
-		return
-	}
-
-	payment, err := s.Pay(account.ID, 1000_00, "auto")
-	if err != nil {
-		t.Errorf("Reject(): can't create payment, error = %v", err)
-		return
-	}
-
-	err = s.Reject(payment.ID)
-	if err != nil {
-		t.Errorf("Reject(): error = %v", err)
-		return
-	}
-}
-
-func TestService_FindPaymentByID_success(t *testing.T)  {
-	s := &Service{}
-
-	phone := types.Phone("+9920000001")
-	account, err := s.RegisterAccount(phone)
-	if err != nil {
-		t.Errorf("Reject(): can't register account, error = %v", err)
-		return
-	}
-
-	err = s.Deposit(account.ID, 10_000_00)
-	if err != nil {
-		t.Errorf("Reject(): can't deposit account, error = %v", err)
-		return
-	}
-
-	payment, err := s.Pay(account.ID, 1000_00, "auto")
-	if err != nil {
-		t.Errorf("Reject(): can't create payment, error = %v", err)
-		return
-	}
-
+	//пробуем найти платеж
+	payment := payments[0]
 	got, err := s.FindPaymentByID(payment.ID)
 	if err != nil {
 		t.Errorf("FindPaymentByID(): error = %v", err)
-		return
-	} 
+	}
 
 	if !reflect.DeepEqual(payment, got) {
 		t.Errorf("FindPaymentByID(): wrong payment returned = %v", err)
+	}
+}
+
+func TestService_FindPaymentByID_fail(t *testing.T) {
+	//создаем сервис
+	s := newTestService()
+	_, _, err := s.addAccount(defaultTestAccount)
+	if err != nil {
+		t.Error(err)
+		return
+	}
+
+	//пробуем найти несуществующий платеж
+	_, err = s.FindPaymentByID(uuid.New().String())
+	if err == nil {
+		t.Error("FindPaymentByID: must return error, returned nil")
+		return
+	}
+
+	if err != ErrPaymentNotFound {
+		t.Errorf("FindPaymentByID(): must return ErrPaymnetNotFound, returned = %v", err)
+		return
 	}
 }
 
@@ -125,5 +199,38 @@ func TestService_Reject_fail(t *testing.T) {
 	err = svc.Reject(editPayID)
 	if err == nil {
 		t.Errorf("\ngot > %v \nwant > nil", err)
+	}
+}
+
+func TestService_Reject_success(t *testing.T) {
+	//создаем сервис
+	s := newTestService()
+	_, payments, err := s.addAccount(defaultTestAccount)
+	if err != nil {
+		t.Error(err)
+		return
+	}
+
+	//пробуем отменить платёж
+	payment := payments[0]
+	err = s.Reject(payment.ID)
+	if err != nil {
+		t.Errorf("Reject(): error = %v", err)
+		return
+	}
+
+	savedPayment, err := s.FindPaymentByID(payment.ID)
+	if err != nil {
+		t.Errorf("Reject(): status didn't changed, paymnet = %v", savedPayment)
+		return
+	}
+	savedAccount, err := s.FindAccountByID(payment.AccountID)
+	if err != nil {
+		t.Errorf("Reject(): can't find account by id, error = %v", err)
+		return
+	}
+	if savedAccount.Balance != defaultTestAccount.balance {
+		t.Errorf("Reject(): balance didn't changed, account = %v", savedAccount)
+		return
 	}
 }
