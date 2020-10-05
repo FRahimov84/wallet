@@ -168,20 +168,20 @@ func newTestService() *testService {
 }
 
 //addAccountWithBalnce
-func (s *testService) addAccountWithBalnce(phone types.Phone, balance types.Money) (*types.Account, error) {
-	account, err := s.RegisterAccount(phone)
-	if err != nil {
-		return nil, fmt.Errorf("can't register account, error = %v", err)
-	}
+// func (s *testService) addAccountWithBalnce(phone types.Phone, balance types.Money) (*types.Account, error) {
+// 	account, err := s.RegisterAccount(phone)
+// 	if err != nil {
+// 		return nil, fmt.Errorf("can't register account, error = %v", err)
+// 	}
 
-	//пополняем его счёт
-	err = s.Deposit(account.ID, balance)
-	if err != nil {
-		return nil, fmt.Errorf("can't deposit account, error = %v", err)
-	}
+// 	//пополняем его счёт
+// 	err = s.Deposit(account.ID, balance)
+// 	if err != nil {
+// 		return nil, fmt.Errorf("can't deposit account, error = %v", err)
+// 	}
 
-	return account, nil
-}
+// 	return account, nil
+// }
 
 type testAccount struct {
 	phone    types.Phone
@@ -229,4 +229,20 @@ func (s *testService) addAccount(data testAccount) (*types.Account, []*types.Pay
 	return account, payments, nil
 }
 
+//Repeat-позволяет по идентификатору повторить платёж - т.е.
+//создать новый, у которого все данные, кроме идентификатора - те же самые, что в
+//оригинальном платеже.
+func (s *Service) Repeat(paymentID string) (*types.Payment, error){
+	pay, err := s.FindPaymentByID(paymentID)
+	if err!=nil {
+		return nil, err
+	}
+
+	payment, err :=s.Pay(pay.AccountID, pay.Amount, pay.Category)
+	if err!=nil {
+		return nil, err
+	}
+
+	return payment, err
+}
 
